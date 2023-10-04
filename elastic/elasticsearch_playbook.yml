@@ -1,0 +1,45 @@
+---
+- name: Install Elasticsearch Cluster
+  hosts: elasticsearch
+  become: yes
+
+  tasks:
+    - name: Add Elasticsearch GPG Key
+      apt_key:
+        url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+        state: present
+
+    - name: Add Elasticsearch APT Repository
+      apt_repository:
+        repo: "deb https://artifacts.elastic.co/packages/7.x/apt stable main"
+        state: present
+        filename: "elastic-7.x"
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install OpenJDK
+      apt:
+        name: openjdk-11-jdk
+        state: present
+
+    - name: Install Elasticsearch
+      apt:
+        name: elasticsearch
+        state: present
+
+    - name: Configure Elasticsearch Cluster
+      template:
+        src: elasticsearch.yml.j2
+        dest: /etc/elasticsearch/elasticsearch.yml
+      notify:
+        - Restart Elasticsearch
+
+  handlers:
+    - name: Restart Elasticsearch
+      systemd:
+        name: elasticsearch
+        enabled: yes
+        state: restarted
+
