@@ -5,8 +5,8 @@ app = FastAPI()
 
 # Initialize Elasticsearch client with your cluster nodes
 es = Elasticsearch(
-    ['http://172.26.211.39:9200', 'http://172.26.211.40:9200', 'http://172.26.211.41:9200'],
-    http_auth=('elastic', 'Tecnalia#elastic.'))
+    ['node1:9200', 'node2:9200', 'node3:9200'],
+    http_auth=('tecnalia', 'iac-llm'))
 
 
 @app.post("/store-single-document/")
